@@ -1,0 +1,134 @@
+#+TITLE: Emacs configuration file
+#+AUTHOR: Nguyen Tien Hai
+#+BABEL: :cache yes
+#+PROPERTY: header-args :tangle ~/.emacs.d/init.el
+#+BEGIN_SRC emacs-lisp
+;;; -*- lexical-binding: t -*-
+#+END_SRC
+
+* Initialize the configuration
+** Tangle & byte compile
+
+Tangle and byte compile
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(defun my--tangle-byte-compile-org ()
+ "Tangles emacs.org and byte compiles ~/.emacs.d/"
+   (interactive)
+   (when (equal (buffer-name)
+                (concat "init.org"))
+     (org-babel-tangle)
+     (byte-recompile-directory (expand-file-name user-emacs-directory) 0)))
+#+END_SRC
+Tangle
+
+#+BEGIN_SRC emacs-lisp 
+(defun my--tangle-org ()
+ "Tangles emacs.org and byte compiles ~/.emacs.d/"
+   (interactive)
+   (when (equal (buffer-name)
+                (concat "init.org"))
+     (org-babel-tangle)))
+(add-hook 'after-save-hook #'my--tangle-org)
+#+END_SRC
+
+** Bootstrap straight.el
+*** Install straight.el if not yet
+#+BEGIN_SRC emacs-lisp 
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+END_SRC
+*** Install use-package and set it to use straight by default
+#+BEGIN_SRC emacs-lisp  
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+#+END_SRC
+
+** Neccessary sane default
+
+#+BEGIN_SRC emacs-lisp 
+(use-package nimbus-theme)
+(setq make-backup-files nil) ; stop creating backup~ files
+(setq auto-save-default nil) ; stop creating #autosave# files
+(setq create-lockfiles nil)  ; stop creating .# files
+(global-auto-revert-mode t)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(transient-mark-mode 1)
+(delete-selection-mode 1)
+(global-hl-line-mode 0)
+(add-hook 'org-capture-mode-hook #'visual-line-mode)
+(global-display-line-numbers-mode)
+(setq
+ cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
+ inhibit-splash-screen t
+ default-frame-alist '((font . "Source Code Pro-9"))
+ display-line-numbers-type 'relative
+ echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
+ initial-scratch-message nil       ; Empty scratch buffer
+ initial-major-mode 'org-mode      ; org mode by default
+ sentence-end-double-space nil     ; Sentences should end in one space, come on!
+ confirm-kill-emacs 'y-or-n-p      ; y and n instead of yes and no when quitting
+)
+(fset 'yes-or-no-p 'y-or-n-p)      ; y and n instead of yes and no everywhere else
+(setq scroll-margin 10
+   scroll-step 1
+   next-line-add-newlines nil
+   scroll-conservatively 10000
+   scroll-preserve-screen-position 1)
+(setq mouse-wheel-follow-mouse 't)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq custom-safe-themes t)
+#+END_SRC
+
+* Utilities setup
+** ivy and counsel bundle
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :diminish ivy-mode
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist
+  '((swiper . ivy--regex-plus)
+   (t      . ivy--regex-fuzzy))))
+(use-package counsel
+  :diminish counsel-mode
+  :config
+  (counsel-mode 1))
+(use-package smex)
+(use-package flx)
+(use-package avy)
+#+END_SRC
+
+** Auto-completion with company-mode
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package company
+      :config
+      (setq company-idle-delay 0.1)
+      (global-company-mode))
+#+END_SRC
+
+* Programming setup
+** Python with elpy
+#+BEGIN_SRC emacs-lisp
+(use-package elpy
+  :init
+  (elpy-enable))
+#+END_SRC
