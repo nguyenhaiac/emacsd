@@ -160,6 +160,26 @@ Tangle
     :config
     (global-origami-mode t))
 #+END_SRC
+** Aesthetic config
+*** Doom mode line
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :hook (after-init . doom-modeline-mode)
+    :config
+    (setq doom-modeline-project-detection 'project
+	  doom-modeline-major-mode-icon t
+	  doom-modeline-env-enable-python t
+	  doom-modeline-env-python-executable "python"
+	  ))
+#+END_SRC
+*** Doom themes
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+	  doom-themes-enable-italic t))
+    (load-theme 'doom-one t)
+#+END_SRC
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
@@ -457,4 +477,59 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
     :config
     (global-set-key (kbd "M-o") 'ace-window)
     (setq aw-keys '(?a ?r ?s ?t ?d ?h ?n ?e ?i)))
+#+END_SRC
+** Editting
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :keymaps 'global
+   "M-p" 'move-line-up
+   "M-n" 'move-line-down
+   "H-c" 'copy-line
+   )
+#+END_SRC
+
+* Helper function for editting
+#+BEGIN_SRC emacs-lisp
+  (defmacro save-column (&rest body)
+    `(let ((column (current-column)))
+       (unwind-protect
+	   (progn ,@body)
+	 (move-to-column column))))
+  (put 'save-column 'lisp-indent-function 0)
+
+  (defun move-line-up ()
+    (interactive)
+    (save-column
+      (transpose-lines 1)
+      (forward-line -2)))
+
+  (defun move-line-down ()
+    (interactive)
+    (save-column
+      (forward-line 1)
+      (transpose-lines 1)
+      (forward-line -1)))
+#+END_SRC
+** Copy whole line 
+#+BEGIN_SRC emacs-lisp
+   (defun copy-line (arg)
+      "Copy lines (as many as prefix argument) in the kill ring.
+	Ease of use features:
+	- Move to start of next line.
+	- Appends the copy on sequential calls.
+	- Use newline as last char even on the last line of the buffer.
+	- If region is active, copy its lines."
+      (interactive "p")
+      (let ((beg (line-beginning-position))
+	    (end (line-end-position arg)))
+	(when mark-active
+	  (if (> (point) (mark))
+	      (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+	    (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+	(if (eq last-command 'copy-line)
+	    (kill-append (buffer-substring beg end) (< end beg))
+	  (kill-ring-save beg end)))
+      (kill-append "\n" nil)
+      (beginning-of-line (or (and arg (1+ arg)) 2))
+      (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 #+END_SRC
