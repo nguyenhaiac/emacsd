@@ -137,6 +137,15 @@ Tangle
     (general-create-definer my-local-leader-def :prefix ","))
 #+END_SRC
 ** Project management with projectile
+** Undo tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :config
+    (global-undo-tree-mode 1)
+    (global-set-key (kbd "C-z") 'undo)
+    (defalias 'redo 'undo-tree-redo)
+    (global-set-key (kbd "C-S-z") 'redo))
+#+END_SRC
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :config
@@ -146,6 +155,10 @@ Tangle
     "H-p" 'projectile-command-map))
 #+END_SRC
 * Programming setup
+** Magit - the king of git
+#+BEGIN_SRC emacs-lisp
+  (use-package magit)
+#+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp
 (use-package elpy
