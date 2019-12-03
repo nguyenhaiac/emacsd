@@ -154,6 +154,12 @@ Tangle
     (general-define-key :keymaps 'projectile-mode-map
     "H-p" 'projectile-command-map))
 #+END_SRC
+** Origami fold
+#+BEGIN_SRC emacs-lisp
+  (use-package origami
+    :config
+    (global-origami-mode t))
+#+END_SRC
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
@@ -435,3 +441,16 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	       ))))
 #+END_SRC
 
+* Keybindings for specific modes
+** For windows movement
+#+BEGIN_SRC emacs-lisp
+  (general-define-key
+   :keymaps 'global
+   "H-e" 'windmove-down
+   "H-u" 'windmove-up
+   "H-n" 'windmove-left
+   "H-i" 'windmove-right
+   "C-x [" 'previous-buffer
+   "C-x ]" 'next-buffer
+   )
+#+END_SRC
