@@ -123,16 +123,27 @@ Tangle
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company
       :config
-      (setq company-idle-delay 0.1)
+      (setq company-idle-delay 0.0
+	    company-minimum-prefix-length 1)
       (global-company-mode))
 #+END_SRC
 
 ** Initialize general keybindings
+
 #+BEGIN_SRC emacs-lisp
   (use-package general
     :config
     (general-create-definer my-leader-def :prefix "SPC")
     (general-create-definer my-local-leader-def :prefix ","))
+#+END_SRC
+** Project management with projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :config
+    (projectile-mode 1)
+    (setq projectile-completion-system 'ivy)
+    (general-define-key :keymaps 'projectile-mode-map
+    "H-p" 'projectile-command-map))
 #+END_SRC
 * Programming setup
 ** Python with elpy
@@ -140,6 +151,10 @@ Tangle
 (use-package elpy
   :init
   (elpy-enable))
+#+END_SRC
+** Python debugging with realgud
+#+BEGIN_SRC emacs-lisp
+  (use-package realgud)
 #+END_SRC
 * Org-mode config
 ** Org-mode helper function
@@ -251,14 +266,18 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ** Default config for org-mode
 
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-time-grid
-      (quote
-       ((daily today remove-match)
-        (900 1100 1300 1500 1700)
-        "......" "----------------")))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-use-fast-todo-selection t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+  (setq org-agenda-time-grid
+	(quote
+	 ((daily today remove-match)
+	  (900 1100 1300 1500 1700)
+	  "......" "----------------")))
 #+END_SRC
 *** Agenda setup
 #+BEGIN_SRC emacs-lisp
+(require 'org-habit)
 (setq spacemacs-theme-org-agenda-height nil
       org-agenda-start-day "-1d"
       org-agenda-skip-scheduled-if-done t
@@ -402,3 +421,4 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	       "* NEXT %?\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:CREATED: %U\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:LOGGING: DONE(!)\n:ARCHIVE: %%s_archive::* Habits\n:END:\n%U\n"
 	       ))))
 #+END_SRC
+
