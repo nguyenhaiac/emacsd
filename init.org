@@ -409,7 +409,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 				   :order 1)
 			    (:name none
 				   :todo "NEXT"
-				   :face (:background "RosyBrown1" :underline t))
+				   :face (:background "" :underline t))
 			    ))))
 
 	    (alltodo "" ((org-agenda-overriding-header "Doing")
@@ -420,7 +420,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 				   :order 1)
 			    (:name none
 				   :todo t
-				   :face (:background "#8a9a5b" :underline t))
+				   :face (:background "blue" :underline t))
 			    ))))
 
 	    (alltodo "" ((org-agenda-overriding-header "Standalone Task")
@@ -476,7 +476,24 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (use-package ace-window
     :config
     (global-set-key (kbd "M-o") 'ace-window)
-    (setq aw-keys '(?a ?r ?s ?t ?d ?h ?n ?e ?i)))
+    (setq aw-dispatch-always t)
+    (setq aw-keys '(?a ?r ?s ?t ?d ?h ?n ?e ?i))
+    (defvar aw-dispatch-alist
+    '((?x aw-delete-window "Delete Window")
+	  (?w aw-swap-window "Swap Windows")
+	  (?M aw-move-window "Move Window")
+	  (?c aw-copy-window "Copy Window")
+	  (?j aw-switch-buffer-in-window "Select Buffer")
+	  (?f aw-flip-window)
+	  (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+	  (?c aw-split-window-fair "Split Fair Window")
+	  (?v aw-split-window-vert "Split Vert Window")
+	  (?b aw-split-window-horz "Split Horz Window")
+	  (?o delete-other-windows "Delete Other Windows")
+	  (?? aw-show-dispatch-help))
+    "List of actions for `aw-dispatch-default'.")
+  )
+
 #+END_SRC
 ** Editting
 #+BEGIN_SRC emacs-lisp
