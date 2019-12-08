@@ -52,8 +52,9 @@ Tangle
 #+BEGIN_SRC emacs-lisp  
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
+(straight-use-package 'org-plus-contrib)
+(require 'org-tempo)
 #+END_SRC
-
 ** Neccessary sane default
 
 #+BEGIN_SRC emacs-lisp 
@@ -75,7 +76,7 @@ Tangle
 (setq
  cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
  inhibit-splash-screen t
- default-frame-alist '((font . "Source Code Pro-9"))
+ default-frame-alist '((font . "Fira Mono-14"))
  display-line-numbers-type 'relative
  echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
  initial-scratch-message nil       ; Empty scratch buffer
@@ -162,7 +163,7 @@ Tangle
 #+END_SRC
 ** Aesthetic config
 *** Doom mode line
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package doom-modeline
     :hook (after-init . doom-modeline-mode)
     :config
@@ -179,6 +180,17 @@ Tangle
     (setq doom-themes-enable-bold t
 	  doom-themes-enable-italic t))
     (load-theme 'doom-one t)
+#+END_SRC
+*** Modeline spaceline
+    #+begin_src emacs-lisp 
+      (use-package spaceline
+	:config
+	(require 'spaceline-config)
+	(spaceline-emacs-theme))
+    #+end_src
+*** All the icon
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons)
 #+END_SRC
 * Programming setup
 ** Magit - the king of git
