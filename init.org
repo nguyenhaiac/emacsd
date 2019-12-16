@@ -60,6 +60,7 @@ Tangle
 #+BEGIN_SRC emacs-lisp 
 (setq w32-pass-apps-to-system nil)
 (setq w32-apps-modifier 'hyper)
+(server-mode t)
 (use-package nimbus-theme)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
@@ -76,7 +77,7 @@ Tangle
 (setq
  cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
  inhibit-splash-screen t
- default-frame-alist '((font . "Fira Mono-14"))
+ default-frame-alist '((font . "Fira Mono for Powerline-12"))
  display-line-numbers-type 'relative
  echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
  initial-scratch-message nil       ; Empty scratch buffer
@@ -192,21 +193,56 @@ Tangle
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons)
 #+END_SRC
+** Posframe and ivy-posframe
+   #+begin_src emacs-lisp
+     (use-package posframe)
+     (use-package ivy-posframe
+       :config
+       ;;(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display)))
+       (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-point)))
+       ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
+       ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-left)))
+       ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-bottom-left)))
+       ;; (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-top-center)))
+       (ivy-posframe-mode 1))
+   #+end_src
+** Company Posframe
+   #+begin_src emacs-lisp
+     (use-package company-posframe
+       :config
+       (company-posframe-mode t))
+   #+end_src
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
 #+END_SRC
 ** Python with elpy
-#+BEGIN_SRC emacs-lisp
-(use-package elpy
-  :init
-  (elpy-enable))
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package elpy
+    :config
+    (elpy-enable))
 #+END_SRC
 ** Python debugging with realgud
 #+BEGIN_SRC emacs-lisp
   (use-package realgud)
 #+END_SRC
+** Python with eglot
+   #+begin_src emacs-lisp :tangle no
+     (use-package eglot
+       :hook (python-mode . eglot-ensure))
+   #+end_src
+** C programming setup
+   #+begin_src emacs-lisp
+     (use-package company-irony
+       :config
+       (add-to-list 'company-backends 'company-irony))
+
+     (use-package irony
+       :hook ((c++-mode-hook . irony-mode)
+	      (c-mode-hook . irony-mode)
+	      (irony-mode-hook . irony-cdb-autosetup-compile-options)))
+   #+end_src
 * Org-mode config
 ** Org-mode helper function
 #+BEGIN_SRC emacs-lisp
@@ -460,7 +496,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (setq org-capture-templates
       (quote (("t" "todo" entry (file+headline "~/Dropbox/orggtd/todo.org" "Inbox")
                "* [ ] %?\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("n" "note" entry (file "~/Dropbox/orggtd/todo.org")
+              ("n" "note" entry (file "~/Dropbox/orggtd/notes.org")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
               ("j" "Journal" entry (file+datetree "~/Dropbox/orggtd/journal.org")
                "* %?\n%U\n" :clock-in t :clock-resume t)
@@ -473,6 +509,52 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	       ))))
 #+END_SRC
 
+** Org-babel setting
+   #+begin_src emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((ruby . t)
+	(groovy . t)
+	(shell . t)
+	(python . t)
+	(emacs-lisp . t)
+	(matlab . t)
+	(latex . t)
+	(C . t)
+	(J . t)
+	(java . t)
+	(scheme . t)
+	(lisp . t)
+	(latex . t)
+	(R . t)
+	(sql . t)
+	(calc . t)))
+
+     (eval-when-compile
+       (require 'ob-C)
+       (require 'ob-ruby)
+       (require 'ob-python)
+       (require 'ob-scheme)
+       (require 'ob-clojure))
+     (setq org-confirm-babel-evaluate nil)
+   #+end_src
+*** Org babel header
+    #+begin_src emacs-lisp
+      ;;* Python
+      (setq org-babel-default-header-args:python
+	    '((:results . "output")))
+      (setq org-babel-python-command "python3")
+
+      ;;* Bash
+      (setq org-babel-default-header-args:sh
+	    '((:results . "verbatim")))
+      (setq org-babel-default-header-args:bash
+	    '((:results . "verbatim")))
+
+      (setq org-babel-default-header-args:C
+	    '((:results . "org")
+	      (:exports . "both")))
+    #+end_src
 * Keybindings for specific modes
 ** For windows movement
 #+BEGIN_SRC emacs-lisp
@@ -562,3 +644,14 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (beginning-of-line (or (and arg (1+ arg)) 2))
       (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 #+END_SRC
+* Elfeed
+  #+begin_src emacs-lisp
+    (use-package elfeed
+      :config
+      (global-set-key (kbd "C-x w") 'elfeed)
+      (setq elfeed-feeds
+	    '("https://realpython.com/atom.xml"
+	      "https://planetpython.org/rss20.xml"
+	      "https://lukesmith.xyz/rss.xml"
+	      "https://planet.emacslife.com/atom.xml"))
+  #+end_src
