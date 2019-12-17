@@ -154,7 +154,7 @@ Tangle
     (projectile-mode 1)
     (setq projectile-completion-system 'ivy)
     (general-define-key :keymaps 'projectile-mode-map
-    "H-p" 'projectile-command-map))
+    "H-x p" 'projectile-command-map))
 #+END_SRC
 ** Origami fold
 #+BEGIN_SRC emacs-lisp
@@ -194,7 +194,7 @@ Tangle
   (use-package all-the-icons)
 #+END_SRC
 ** Posframe and ivy-posframe
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package posframe)
      (use-package ivy-posframe
        :config
@@ -207,11 +207,31 @@ Tangle
        (ivy-posframe-mode 1))
    #+end_src
 ** Company Posframe
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package company-posframe
        :config
        (company-posframe-mode t))
    #+end_src
+** Whichkey
+#+begin_src emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-mode))
+#+end_src
+** Deadgrep
+#+begin_src emacs-lisp
+  (use-package deadgrep
+    :config
+    (global-set-key (kbd "<f5>") #'deadgrep))
+#+end_src
+** Org-helm-rifle
+#+begin_src emacs-lisp
+  (use-package helm-org-rifle)
+  (defun hai/helm-org-rifle-archives ()
+    "Rifle through Archives folder"
+    (interactive)
+    (helm-org-rifle-directories "~/Dropbox/orggtd/"))
+#+end_src
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
@@ -497,7 +517,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (quote (("t" "todo" entry (file+headline "~/Dropbox/orggtd/todo.org" "Inbox")
                "* [ ] %?\n%U\n%a\n" :clock-in t :clock-resume t)
               ("n" "note" entry (file "~/Dropbox/orggtd/notes.org")
-               "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+               "* %? %^G :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
               ("j" "Journal" entry (file+datetree "~/Dropbox/orggtd/journal.org")
                "* %?\n%U\n" :clock-in t :clock-resume t)
               ("m" "Meeting" entry (file "~/Dropbox/orggtd/todo.org")
@@ -560,10 +580,6 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+BEGIN_SRC emacs-lisp
   (general-define-key
    :keymaps 'global
-   "H-e" 'windmove-down
-   "H-u" 'windmove-up
-   "H-n" 'windmove-left
-   "H-i" 'windmove-right
    "C-x [" 'previous-buffer
    "C-x ]" 'next-buffer
    )
@@ -589,6 +605,20 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   )
 
 #+END_SRC
+** For orgmode navigation
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymap 'org-mode-map
+   "H-n" 'org-next-visible-heading
+   "H-p" 'org-previous-visible-heading)
+  (general-define-key
+   :keymaps 'global
+   "H-x o" '((lambda() (interactive)(org-agenda nil "z")) :which-key "org-agenda")
+   "H-x c" 'org-capture
+   "H-x n" '((lambda() (interactive)(org-capture nil "n")) :which-key "Taking notes")
+   "H-x f" 'hai/helm-org-rifle-archives
+   )
+#+end_src
 ** Editting
 #+BEGIN_SRC emacs-lisp
   (general-define-key
@@ -653,5 +683,5 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	    '("https://realpython.com/atom.xml"
 	      "https://planetpython.org/rss20.xml"
 	      "https://lukesmith.xyz/rss.xml"
-	      "https://planet.emacslife.com/atom.xml"))
+	      "https://planet.emacslife.com/atom.xml")))
   #+end_src
