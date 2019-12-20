@@ -55,7 +55,7 @@ Tangle
 (straight-use-package 'org-plus-contrib)
 (require 'org-tempo)
 #+END_SRC
-** Neccessary sane default
+** Neccessary sane defaulti
 
 #+BEGIN_SRC emacs-lisp 
 (setq w32-pass-apps-to-system nil)
@@ -95,7 +95,14 @@ Tangle
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq custom-safe-themes t)
 #+END_SRC
-
+** Proxy setting
+#+begin_src emacs-lisp
+  (setq inhibit-compacting-font-caches t)
+  (setq url-proxy-services '((("no_proxy"
+        . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
+            ("http"     . "access614.cws.sco.cisco.com:8080")
+          ("https"    . "access614.cws.sco.cisco.com:8080"))))
+#+end_src
 * Utilities setup
 ** ivy and counsel bundle
 
@@ -373,6 +380,10 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ** Default config for org-mode
 
 #+BEGIN_SRC emacs-lisp
+  (use-package org
+    :custom (org-ellipsis "⋯")
+    (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+"))))
+  (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-refile-use-outline-path 'file)
   (setq org-use-fast-todo-selection t)
   (setq org-treat-S-cursor-todo-selection-as-state-change nil)
@@ -685,3 +696,44 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	      "https://lukesmith.xyz/rss.xml"
 	      "https://planet.emacslife.com/atom.xml")))
   #+end_src
+* Deft and zettledeft
+  #+begin_src emacs-lisp
+    (use-package deft
+      :defer t
+      :commands (deft)
+      :general
+      (general-define-key
+       "H-d d" 'deft
+       "H-d n" 'zetteldeft-new-file
+       "H-d N" 'zetteldeft-new-file-and-link
+       "H-d r" 'zetteldeft-file-rename
+       "H-d s" 'zetteldeft-search-at-point
+       "H-d c" 'zetteldeft-search-current-id
+       "H-d f" 'zetteldeft-follow-link
+       "H-d F" 'zetteldeft-avy-file-search-ace-window
+       "H-d l" 'zetteldeft-avy-link-search
+       "H-d t" 'zetteldeft-avy-tag-search
+       "H-d T" 'zetteldeft-tag-buffer
+       "H-d i" 'zetteldeft-find-file-id-insert
+       "H-d I" 'zetteldeft-find-file-full-title-insert
+       "H-d o" 'zetteldeft-find-file
+       )
+      :init (setq deft-directory "~/Dropbox/Archives"
+                        deft-text-mode 'org-mode
+                        deft-extensions '("org")
+                        deft-recursive t
+                        deft-use-filename-as-title nil))
+    (setq deft-file-naming-rules
+          '((noslash . "-")
+            (nospace . "-")
+            (case-fn . downcase)))
+    (setq deft-org-mode-title-prefix t)
+  #+end_src
+#+begin_src emacs-lisp
+  (use-package zetteldeft
+    :straight (zetteldeft :type git :host github :repo "EFLS/zetteldeft"))
+#+end_src
+** org-web-tools
+#+begin_src emacs-lisp
+  (use-package org-web-tools)
+#+end_src
