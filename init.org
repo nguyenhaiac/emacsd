@@ -542,33 +542,37 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 ** Org-babel setting
    #+begin_src emacs-lisp
-     (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((ruby . t)
-	(groovy . t)
-	(shell . t)
-	(python . t)
-	(emacs-lisp . t)
-	(matlab . t)
-	(latex . t)
-	(C . t)
-	(J . t)
-	(java . t)
-	(scheme . t)
-	(lisp . t)
-	(latex . t)
-	(R . t)
-	(sql . t)
-	(calc . t)))
+          (org-babel-do-load-languages
+           'org-babel-load-languages
+           '((ruby . t)
+             (dot . t)
+             (groovy . t)
+             (shell . t)
+             (python . t)
+             (emacs-lisp . t)
+             (matlab . t)
+             (latex . t)
+             (C . t)
+             (J . t)
+             (java . t)
+             (scheme . t)
+             (lisp . t)
+             (latex . t)
+             (R . t)
+             (sql . t)
+             (calc . t)))
 
-     (eval-when-compile
-       (require 'ob-C)
-       (require 'ob-ruby)
-       (require 'ob-python)
-       (require 'ob-scheme)
-       (require 'ob-clojure))
-     (setq org-confirm-babel-evaluate nil)
+          (eval-when-compile
+            (require 'ob-C)
+            (require 'ob-ruby)
+            (require 'ob-python)
+            (require 'ob-scheme)
+            (require 'ob-clojure))
+          (setq org-confirm-babel-evaluate nil)
    #+end_src
+
+   #+RESULTS:
+
 *** Org babel header
     #+begin_src emacs-lisp
       ;;* Python
@@ -736,4 +740,9 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ** org-web-tools
 #+begin_src emacs-lisp
   (use-package org-web-tools)
+#+end_src
+* graphviz mode
+Of course to use this. you have to install graphviz program on you pc. Add it to path if you still cannot run it
+#+begin_src emacs-lisp
+  (use-package graphviz-dot-mode)
 #+end_src
