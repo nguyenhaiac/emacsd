@@ -245,7 +245,7 @@ Tangle
   (use-package magit)
 #+END_SRC
 ** Python with elpy
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package elpy
     :config
     (elpy-enable))
@@ -254,11 +254,18 @@ Tangle
 #+BEGIN_SRC emacs-lisp
   (use-package realgud)
 #+END_SRC
-** Python with eglot
-   #+begin_src emacs-lisp :tangle no
-     (use-package eglot
-       :hook (python-mode . eglot-ensure))
-   #+end_src
+** Python with lsp mode
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :commands lsp
+    :hook (prog-mode . lsp))
+  (use-package company-lsp :commands company-lsp)
+  (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+#+end_src
+** pyvenv
+#+begin_src emacs-lisp
+  (use-package pyvenv)
+#+end_src
 ** C programming setup
    #+begin_src emacs-lisp
      (use-package company-irony
@@ -270,6 +277,15 @@ Tangle
 	      (c-mode-hook . irony-mode)
 	      (irony-mode-hook . irony-cdb-autosetup-compile-options)))
    #+end_src
+** vterm
+#+begin_src emacs-lisp
+  (use-package vterm)
+
+#+end_src
+** rustic - rust mode for emacs
+#+begin_src emacs-lisp
+  (use-package rustic)
+#+end_src
 * Org-mode config
 ** Org-mode helper function
 #+BEGIN_SRC emacs-lisp
@@ -745,4 +761,168 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 Of course to use this. you have to install graphviz program on you pc. Add it to path if you still cannot run it
 #+begin_src emacs-lisp
   (use-package graphviz-dot-mode)
+#+end_src
+* Smartparens
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :config
+    (smartparens-global-mode)
+    (require 'smartparens-config))
+
+  (general-define-key
+   :keymaps 'smartparens-mode-map
+   "C-M-f" 'sp-forward-sexp
+   "C-M-b" 'sp-backward-sexp
+   "H-u" 'sp-unwrap-sexp
+   )
+
+  (sp-pair "(" ")" :wrap "C-("
+           :pre-handlers '(my-add-space-before-sexp-insertion)
+           :post-handlers '(my-add-space-after-sexp-insertion))
+  (sp-pair "{" "}" :wrap "H-{"
+           :pre-handlers '(my-add-space-before-sexp-insertion)
+           :post-handlers '(my-add-space-after-sexp-insertion))
+  (sp-pair "[" "]" :wrap "H-["
+           :pre-handlers '(my-add-space-before-sexp-insertion)
+           :post-handlers '(my-add-space-after-sexp-insertion))
+#+end_src
+* hydra
+#+begin_src emacs-lisp
+  (use-package hydra)
+#+end_src
+** Some useful hydra
+*** Orgclock timer
+#+begin_src emacs-lisp :tangle yes
+  (global-set-key (kbd "C-c w")
+  (defhydra hydra-org-clock (:color blue :hint nil)
+     "
+  Clock   In/out^     ^Edit^   ^Summary     (_?_)
+  -----------------------------------------
+          _i_n         _e_dit   _g_oto entry
+          _c_ontinue   _q_uit   _d_isplay
+          _o_ut        ^ ^      _r_eport
+        "
+     ("i" org-clock-in)
+     ("o" org-clock-out)
+     ("c" org-clock-in-last)
+     ("e" org-clock-modify-effort-estimate)
+     ("q" org-clock-cancel)
+     ("g" org-clock-goto)
+     ("d" org-clock-display)
+     ("r" org-clock-report)
+     ("?" (org-info "Clocking commands"))))
+#+end_src
+*** Smartparens
+#+begin_src emacs-lisp :tangle yes
+  (global-set-key (kbd "C-M-s")
+  (defhydra hydra-smartparens (:hint nil)
+    "
+   Moving^^^^                       Slurp & Barf^^   Wrapping^^            Sexp juggling^^^^               Destructive
+  ------------------------------------------------------------------------------------------------------------------------
+   [_a_] beginning  [_n_] down      [_h_] bw slurp   [_R_]   rewrap        [_S_] split   [_t_] transpose   [_c_] change inner  [_w_] copy
+   [_e_] end        [_N_] bw down   [_H_] bw barf    [_u_]   unwrap        [_s_] splice  [_A_] absorb      [_C_] change outer
+   [_f_] forward    [_p_] up        [_l_] slurp      [_U_]   bw unwrap     [_r_] raise   [_E_] emit        [_k_] kill          [_g_] quit
+   [_b_] backward   [_P_] bw up     [_L_] barf       [_(__{__[_] wrap (){}[]   [_j_] join    [_o_] convolute   [_K_] bw kill       [_q_] quit"
+    ;; Moving
+    ("a" sp-beginning-of-sexp)
+    ("e" sp-end-of-sexp)
+    ("f" sp-forward-sexp)
+    ("b" sp-backward-sexp)
+    ("n" sp-down-sexp)
+    ("N" sp-backward-down-sexp)
+    ("p" sp-up-sexp)
+    ("P" sp-backward-up-sexp)
+
+    ;; Slurping & barfing
+    ("h" sp-backward-slurp-sexp)
+    ("H" sp-backward-barf-sexp)
+    ("l" sp-forward-slurp-sexp)
+    ("L" sp-forward-barf-sexp)
+
+    ;; Wrapping
+    ("R" sp-rewrap-sexp)
+    ("u" sp-unwrap-sexp)
+    ("U" sp-backward-unwrap-sexp)
+    ("(" sp-wrap-round)
+    ("{" sp-wrap-curly)
+    ("[" sp-wrap-square)
+
+    ;; Sexp juggling
+    ("S" sp-split-sexp)
+    ("s" sp-splice-sexp)
+    ("r" sp-raise-sexp)
+    ("j" sp-join-sexp)
+    ("t" sp-transpose-sexp)
+    ("A" sp-absorb-sexp)
+    ("E" sp-emit-sexp)
+    ("o" sp-convolute-sexp)
+
+    ;; Destructive editing
+    ("c" sp-change-inner :exit t)
+    ("C" sp-change-enclosing :exit t)
+    ("k" sp-kill-sexp)
+    ("K" sp-backward-kill-sexp)
+    ("w" sp-copy-sexp)
+
+    ("q" nil)
+    ("g" nil)))
+#+end_src
+*** Lsp mode
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c l")
+  (defhydra hydra-lsp (:exit t :hint nil)
+    "
+   Buffer^^               Server^^                   Symbol
+  -------------------------------------------------------------------------------------
+   [_f_] format           [_M-r_] restart            [_d_] declaration  [_i_] implementation  [_o_] documentation
+   [_m_] imenu            [_S_]   shutdown           [_D_] definition   [_t_] type            [_r_] rename
+   [_x_] execute action   [_M-s_] describe session   [_R_] references   [_s_] signature"
+    ("d" lsp-find-declaration)
+    ("D" lsp-ui-peek-find-definitions)
+    ("R" lsp-ui-peek-find-references)
+    ("i" lsp-ui-peek-find-implementation)
+    ("t" lsp-find-type-definition)
+    ("s" lsp-signature-help)
+    ("o" lsp-describe-thing-at-point)
+    ("r" lsp-rename)
+
+    ("f" lsp-format-buffer)
+    ("m" lsp-ui-imenu)
+    ("x" lsp-execute-code-action)
+
+    ("M-s" lsp-describe-session)
+    ("M-r" lsp-restart-workspace)
+    ("S" lsp-shutdown-workspace)))
+#+end_src
+*** Apropos commands
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c a")
+  (defhydra hydra-apropos (:color blue)
+    "Apropos"
+    ("a" apropos "apropos")
+    ("c" apropos-command "cmd")
+    ("d" apropos-documentation "doc")
+    ("e" apropos-value "val")
+    ("l" apropos-library "lib")
+    ("o" apropos-user-option "option")
+    ("u" apropos-user-option "option")
+    ("v" apropos-variable "var")
+    ("i" info-apropos "info")
+    ("t" tags-apropos "tags")
+    ("z" hydra-customize-apropos/body "customize")))
+#+end_src
+*** Transposing
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c m")
+  (defhydra hydra-transpose (:color red)
+  "Transpose"
+   ("c" transpose-chars "characters")
+   ("w" transpose-words "words")
+   ("o" org-transpose-words "Org mode words")
+   ("l" transpose-lines "lines")
+   ("s" transpose-sentences "sentences")
+   ("e" org-transpose-elements "Org mode elements")
+   ("p" transpose-paragraphs "paragraphs")
+   ("t" org-table-transpose-table-at-point "Org mode table")
+   ("q" nil "cancel" :blue color)))
 #+end_src
