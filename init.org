@@ -58,42 +58,43 @@ Tangle
 ** Neccessary sane defaulti
 
 #+BEGIN_SRC emacs-lisp 
-(setq w32-pass-apps-to-system nil)
-(setq w32-apps-modifier 'hyper)
-(server-mode t)
-(use-package nimbus-theme)
-(setq make-backup-files nil) ; stop creating backup~ files
-(setq auto-save-default nil) ; stop creating #autosave# files
-(setq create-lockfiles nil)  ; stop creating .# files
-(global-auto-revert-mode t)
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(transient-mark-mode 1)
-(delete-selection-mode 1)
-(global-hl-line-mode 0)
-(add-hook 'org-capture-mode-hook #'visual-line-mode)
-(global-display-line-numbers-mode)
-(setq
- cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
- inhibit-splash-screen t
- default-frame-alist '((font . "Fira Mono for Powerline-12"))
- display-line-numbers-type 'relative
- echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
- initial-scratch-message nil       ; Empty scratch buffer
- initial-major-mode 'org-mode      ; org mode by default
- sentence-end-double-space nil     ; Sentences should end in one space, come on!
- confirm-kill-emacs 'y-or-n-p      ; y and n instead of yes and no when quitting
-)
-(fset 'yes-or-no-p 'y-or-n-p)      ; y and n instead of yes and no everywhere else
-(setq scroll-margin 10
-   scroll-step 1
-   next-line-add-newlines nil
-   scroll-conservatively 10000
-   scroll-preserve-screen-position 1)
-(setq mouse-wheel-follow-mouse 't)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq custom-safe-themes t)
+  (setq w32-pass-apps-to-system nil)
+  (setq w32-apps-modifier 'hyper)
+  (server-mode t)
+  (use-package nimbus-theme)
+  (setq make-backup-files nil) ; stop creating backup~ files
+  (setq auto-save-default nil) ; stop creating #autosave# files
+  (setq create-lockfiles nil)  ; stop creating .# files
+  (global-auto-revert-mode t)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (transient-mark-mode 1)
+  (delete-selection-mode 1)
+  (global-hl-line-mode 0)
+  (add-hook 'org-capture-mode-hook #'visual-line-mode)
+  (global-display-line-numbers-mode)
+  (setq
+   cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
+   inhibit-splash-screen t
+   default-frame-alist '((font . "Fira Mono for Powerline-12"))
+   display-line-numbers-type 'relative
+   echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
+   initial-scratch-message nil       ; Empty scratch buffer
+   initial-major-mode 'org-mode      ; org mode by default
+   sentence-end-double-space nil     ; Sentences should end in one space, come on!
+   confirm-kill-emacs 'y-or-n-p      ; y and n instead of yes and no when quitting
+  )
+  (fset 'yes-or-no-p 'y-or-n-p)      ; y and n instead of yes and no everywhere else
+  (setq scroll-margin 10
+     scroll-step 1
+     next-line-add-newlines nil
+     scroll-conservatively 10000
+     scroll-preserve-screen-position 1)
+  (setq mouse-wheel-follow-mouse 't)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+  (setq custom-safe-themes t)
+  (modify-syntax-entry ?_ "w")
 #+END_SRC
 ** Proxy setting
 #+begin_src emacs-lisp
@@ -106,8 +107,8 @@ Tangle
 * Utilities setup
 ** ivy and counsel bundle
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
+#+BEGIN_SRC emacs-lisp :tangle no
+use-package ivy
   :diminish ivy-mode
   :config
   (ivy-mode 1)
@@ -117,7 +118,7 @@ Tangle
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
   '((swiper . ivy--regex-plus)
-   (t      . ivy--regex-fuzzy))))
+   (t      . ivy--regex-fuzzy)))
 (use-package counsel
   :diminish counsel-mode
   :config
@@ -127,6 +128,21 @@ Tangle
 (use-package avy)
 #+END_SRC
 
+** Helm 
+#+begin_src emacs-lisp
+  (use-package helm
+    :config
+    (global-set-key (kbd "M-x") #'helm-M-x)
+    (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+    (global-set-key (kbd "C-x C-f") #'helm-find-files)
+    (helm-mode 1)
+    (setq helm-grep-ag-command "rg --color=always --colors 'match:fg:black' --colors 'match:bg:yellow' --smart-case --no-heading --line-number %s %s %s")
+    (setq helm-grep-ag-pipe-cmd-switches '("--colors 'match:fg:black'" "--colors 'match:bg:yellow'"))
+    (setq helm-autoresize-max-height 0)
+    (setq helm-autoresize-min-height 40)
+    (helm-autoresize-mode 1)
+    )
+#+end_src
 ** Auto-completion with company-mode
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -242,13 +258,13 @@ Tangle
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
-  (use-package magit)
+  use-package magit
 #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
-  (use-package elpy
+  use-package elpy
     :config
-    (elpy-enable))
+    (elpy-enable)
 #+END_SRC
 ** Python debugging with realgud
 #+BEGIN_SRC emacs-lisp
@@ -289,13 +305,13 @@ Tangle
 * Org-mode config
 ** Org-mode helper function
 #+BEGIN_SRC emacs-lisp
-(defun bh/is-project-p ()
-  "Any task with a todo keyword subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
+defun bh/is-project-p 
+  Any task with a todo keyword subtask
+  save-restriction
+    widen
+    let (has-subtask)
           (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
       (save-excursion
         (forward-line 1)
         (while (and (not has-subtask)
@@ -303,7 +319,7 @@ Tangle
                     (re-search-forward "^\*+ " subtree-end t))
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
-      (and is-a-task has-subtask))))
+      (and is-a-task has-subtask)
 
 (defun bh/find-project-task ()
   "Move point to the parent (project) task if any"
@@ -396,9 +412,6 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ** Default config for org-mode
 
 #+BEGIN_SRC emacs-lisp
-  (use-package org
-    :custom (org-ellipsis "⋯")
-    (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+"))))
   (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-refile-use-outline-path 'file)
   (setq org-use-fast-todo-selection t)
@@ -608,7 +621,17 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (setq org-babel-default-header-args:C
 	    '((:results . "org")
 	      (:exports . "both")))
-    #+end_src 
+    #+end_src
+** Navigation in org-mode
+#+begin_src emacs-lisp
+  (general-define-key
+   :keymaps 'org-mode-map
+   "H-n" 'org-next-visible-heading
+   "H-p" 'org-previous-visible-heading
+   "H-f" 'org-forward-heading-same-level
+   "H-b" 'org-backward-heading-same-level
+   )
+#+end_src
 * Keybindings for specific modes
 ** For windows movement
 #+BEGIN_SRC emacs-lisp
@@ -776,7 +799,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
    :keymaps 'smartparens-mode-map
    "C-M-f" 'sp-forward-sexp
    "C-M-b" 'sp-backward-sexp
-   "H-u" 'sp-unwrap-sexp
+   "C-M-u" 'sp-unwrap-sexp
    )
 
   (sp-pair "(" ")" :wrap "C-("
@@ -928,4 +951,36 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
    ("p" transpose-paragraphs "paragraphs")
    ("t" org-table-transpose-table-at-point "Org mode table")
    ("q" nil "cancel" :blue color)))
+#+end_src
+*** Rectangle operation
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c r")
+  (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+                                       :color pink
+                                       :hint nil
+                                       :post (deactivate-mark))
+    "
+    ^_u_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
+  _n_   _i_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
+    ^_e_^       _d_ kill      _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
+  ^^^^          _U_ndo        _g_ quit     ^ ^                     '---''(./..)-'(_\_)
+  "
+   ("u" rectangle-previous-line)
+   ("e" rectangle-next-line)
+   ("n" rectangle-backward-char)
+   ("i" rectangle-forward-char)
+   ("d" kill-rectangle)                    ;; C-x r k
+   ("y" yank-rectangle)                    ;; C-x r y
+   ("w" copy-rectangle-as-kill)            ;; C-x r M-w
+   ("o" open-rectangle)                    ;; C-x r o
+   ("t" string-rectangle)                  ;; C-x r t
+   ("c" clear-rectangle)                   ;; C-x r c
+   ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
+   ("N" rectangle-number-lines)            ;; C-x r N
+   ("r" (if (region-active-p)
+            (deactivate-mark)
+          (rectangle-mark-mode 1)))
+   ("U" undo nil)
+   ("g" nil))      ;; ok
+  )
 #+end_src
