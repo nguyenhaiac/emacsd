@@ -155,7 +155,7 @@ Tangle
     (defalias 'redo 'undo-tree-redo)
     (global-set-key (kbd "C-S-z") 'redo))
 #+END_SRC
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package projectile
     :config
     (projectile-mode 1)
@@ -278,7 +278,7 @@ Tangle
 	      (irony-mode-hook . irony-cdb-autosetup-compile-options)))
    #+end_src
 ** vterm
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package vterm)
 
 #+end_src
@@ -404,10 +404,14 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (setq org-use-fast-todo-selection t)
   (setq org-treat-S-cursor-todo-selection-as-state-change nil)
   (setq org-agenda-time-grid
-	(quote
-	 ((daily today remove-match)
-	  (900 1100 1300 1500 1700)
-	  "......" "----------------")))
+        (quote
+         ((daily today remove-match)
+          (900 1100 1300 1500 1700)
+          "......" "----------------")))
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+
 #+END_SRC
 *** Agenda setup
 #+BEGIN_SRC emacs-lisp
@@ -448,19 +452,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
            "DONE(d)"  ; Task successfully completed
            "PHONE(p)"
            "MEETING(m)"
-           "KILL(k)") ; Task was cancelled, aborted or is no longer applicable
-          (sequence
-           "[ ](T)"   ; A task that needs doing
-           "[-](S)"   ; Task is in progress
-           "[?](W)"   ; Task is being held up or paused
-           "|"
-           "[X](D)")) ; Task was completed
-        org-todo-keyword-faces
-        '(("[-]"  . +org-todo-active)
-          ("STRT" . +org-todo-active)
-          ("[?]"  . +org-todo-onhold)
-          ("WAIT" . +org-todo-onhold)
-          ))
+           "KILL(k)")))
 #+END_SRC
 *** Org-agenda config
 ** Org-super-agenda setting
@@ -605,7 +597,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (setq org-babel-default-header-args:C
 	    '((:results . "org")
 	      (:exports . "both")))
-    #+end_src
+    #+end_src 
 * Keybindings for specific modes
 ** For windows movement
 #+BEGIN_SRC emacs-lisp
