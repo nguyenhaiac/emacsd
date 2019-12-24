@@ -258,7 +258,7 @@ use-package ivy
 * Programming setup
 ** Magit - the king of git
 #+BEGIN_SRC emacs-lisp
-  use-package magit
+ (use-package magit)
 #+END_SRC
 ** Python with elpy
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -305,13 +305,13 @@ use-package ivy
 * Org-mode config
 ** Org-mode helper function
 #+BEGIN_SRC emacs-lisp
-defun bh/is-project-p 
-  Any task with a todo keyword subtask
-  save-restriction
-    widen
-    let (has-subtask)
+(defun bh/is-project-p ()
+  "Any task with a todo keyword subtask"
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
           (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
       (save-excursion
         (forward-line 1)
         (while (and (not has-subtask)
@@ -319,7 +319,7 @@ defun bh/is-project-p
                     (re-search-forward "^\*+ " subtree-end t))
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
-      (and is-a-task has-subtask)
+      (and is-a-task has-subtask))))
 
 (defun bh/find-project-task ()
   "Move point to the parent (project) task if any"
@@ -632,6 +632,14 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
    "H-b" 'org-backward-heading-same-level
    )
 #+end_src
+** launch agenda
+#+begin_src emacs-lisp
+  (defun pop-to-org-agenda (&optional split)
+    (interactive "P")
+    (org-agenda nil "z")
+    (when (not split)
+      (delete-other-windows)))
+#+end_src
 * Keybindings for specific modes
 ** For windows movement
 #+BEGIN_SRC emacs-lisp
@@ -670,7 +678,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
    "H-p" 'org-previous-visible-heading)
   (general-define-key
    :keymaps 'global
-   "H-x o" '((lambda() (interactive)(org-agenda nil "z")) :which-key "org-agenda")
+   "H-x o" 'pop-to-org-agenda
    "H-x c" 'org-capture
    "H-x n" '((lambda() (interactive)(org-capture nil "n")) :which-key "Taking notes")
    "H-x f" 'hai/helm-org-rifle-archives
