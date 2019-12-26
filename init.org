@@ -1,7 +1,7 @@
 #+TITLE: Emacs configuration file
 #+AUTHOR: Nguyen Tien Hai
 #+BABEL: :cache yes
-#+PROPERTY: header-args :tangle ~/.emacs.d/init.el
+#+PROPERTY: hesader-args :tangle ~/.emacs.d/init.el
 #+BEGIN_SRC emacs-lisp
 ;;; -*- lexical-binding: t -*-
 #+END_SRC
@@ -58,6 +58,7 @@ Tangle
 ** Neccessary sane defaulti
 
 #+BEGIN_SRC emacs-lisp 
+  (setq org-support-shift-select t)
   (setq w32-pass-apps-to-system nil)
   (setq w32-apps-modifier 'hyper)
   (server-mode t)
@@ -77,7 +78,7 @@ Tangle
   (setq
    cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
    inhibit-splash-screen t
-   default-frame-alist '((font . "Fira Mono for Powerline-12"))
+   default-frame-alist '((font . "Source Code Pro-12"))
    display-line-numbers-type 'relative
    echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
    initial-scratch-message nil       ; Empty scratch buffer
@@ -105,6 +106,19 @@ Tangle
           ("https"    . "access614.cws.sco.cisco.com:8080"))))
 #+end_src
 * Utilities setup
+** Avy to navigate text
+#+begin_src emacs-lisp
+  (use-package avy
+    :defer t
+    :bind
+    (("C-c c" . avy-goto-char-timer)
+     ("C-c g" . avy-goto-line))
+    :custom
+    (avy-timeout-seconds 0.3)
+    (avy-style 'pre)
+    :custom-face
+    (avy-lead-face ((t (:background "#51afef" :foreground "#870000" :weight bold)))))
+#+end_src
 ** ivy and counsel bundle
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -807,10 +821,20 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
    :keymaps 'smartparens-mode-map
    "C-M-f" 'sp-forward-sexp
    "C-M-b" 'sp-backward-sexp
-   "C-M-u" 'sp-unwrap-sexp
+   "M-<delete>" 'sp-unwrap-sexp
+   "C-M-a" 'sp-beginning-of-sexp
+   "C-M-e" 'sp-end-of-sexp
+   "C-M-k" 'sp-kill-sexp
+   "C-M-w" 'sp-copy-sexp
+   "C-M-u" 'sp-up-sexp
+   "C-M-d" 'sp-down-sexp
+   "H-t" 'sp-prefix-tag-object
+   "H-p" 'sp-prefix-pair-object
+   "H-y" 'sp-prefix-symbol-object
+   "H-h s" 'sp-highlight-current-sexp
    )
 
-  (sp-pair "(" ")" :wrap "C-("
+  (sp-pair "(" ")" :wrap "H-("
            :pre-handlers '(my-add-space-before-sexp-insertion)
            :post-handlers '(my-add-space-after-sexp-insertion))
   (sp-pair "{" "}" :wrap "H-{"
