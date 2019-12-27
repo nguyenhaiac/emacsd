@@ -294,7 +294,7 @@ use-package ivy
 	      (irony-mode-hook . irony-cdb-autosetup-compile-options)))
    #+end_src
 ** vterm
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
   (use-package vterm)
 
 #+end_src
