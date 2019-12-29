@@ -55,7 +55,7 @@ Tangle
 (straight-use-package 'org-plus-contrib)
 (require 'org-tempo)
 #+END_SRC
-** Neccessary sane defaulti
+** Neccessary sane defaul
 
 #+BEGIN_SRC emacs-lisp 
   (setq w32-pass-apps-to-system nil)
@@ -261,6 +261,7 @@ Tangle
                   ("https://pbpython.com/feeds/all.atom.xml" python)
                   )))
   #+end_src
+
 ** Deft and zettledeft
   #+begin_src emacs-lisp
     (use-package deft
@@ -994,3 +995,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (beginning-of-line (or (and arg (1+ arg)) 2))
       (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 #+END_SRC
+* Better default
+#+begin_src emacs-lisp
+  (use-package better-defaults)
+#+end_src
