@@ -1,7 +1,7 @@
 #+TITLE: Emacs configuration file
 #+AUTHOR: Nguyen Tien Hai
 #+BABEL: :cache yes
-#+PROPERTY: hesader-args :tangle ~/.emacs.d/init.el
+#+PROPERTY: hesader-args :tangle ~/.emacs.d/init.el 
 #+BEGIN_SRC emacs-lisp
 ;;; -*- lexical-binding: t -*-
 #+END_SRC
@@ -22,7 +22,7 @@ Tangle and byte compile
 #+END_SRC
 Tangle
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defun my--tangle-org ()
  "Tangles emacs.org and byte compiles ~/.emacs.d/"
    (interactive)
@@ -34,7 +34,7 @@ Tangle
 
 ** Bootstrap straight.el
 *** Install straight.el if not yet
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -49,7 +49,7 @@ Tangle
   (load bootstrap-file nil 'nomessage))
 #+END_SRC
 *** Install use-package and set it to use straight by default
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp :tangle yes
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 (straight-use-package 'org-plus-contrib)
@@ -57,7 +57,7 @@ Tangle
 #+END_SRC
 ** Neccessary sane defaul
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-support-shift-select t)
   (setq w32-pass-apps-to-system nil)
   (setq w32-apps-modifier 'hyper)
@@ -99,7 +99,7 @@ Tangle
   (modify-syntax-entry ?_ "w")
 #+END_SRC
 ** Proxy setting
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (setq inhibit-compacting-font-caches t)
   (setq url-proxy-services '((("no_proxy"
         . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
@@ -108,7 +108,7 @@ Tangle
 #+end_src
 * Utilities setup
 ** Avy to navigate text
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package avy
     :defer t
     :bind
@@ -144,7 +144,7 @@ Tangle
 #+END_SRC
 
 ** Helm 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package helm)
 #+end_src
 ** Auto-completion with company-mode
@@ -159,7 +159,7 @@ Tangle
 
 ** Initialize general keybindings
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package general
     :config
     (general-create-definer my-leader-def :prefix "SPC")
@@ -167,7 +167,7 @@ Tangle
 #+END_SRC
 ** Project management with projectile
 ** Undo tree
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package undo-tree
     :config
     (global-undo-tree-mode 1)
@@ -184,7 +184,7 @@ Tangle
     "H-x p" 'projectile-command-map))
 #+END_SRC
 ** Origami fold
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package origami
     :config
     (global-origami-mode t))
@@ -202,7 +202,7 @@ Tangle
 	  ))
 #+END_SRC
 *** Doom themes
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package doom-themes
     :config
     (setq doom-themes-enable-bold t
@@ -210,14 +210,14 @@ Tangle
     (load-theme 'doom-one t)
 #+END_SRC
 *** Modeline spaceline
-    #+begin_src emacs-lisp 
+    #+begin_src emacs-lisp  :tangle yes
       (use-package spaceline
 	:config
 	(require 'spaceline-config)
 	(spaceline-emacs-theme))
     #+end_src
 *** All the icon
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package all-the-icons)
 #+END_SRC
 ** Posframe and ivy-posframe
@@ -240,19 +240,19 @@ Tangle
        (company-posframe-mode t))
    #+end_src
 ** Whichkey
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package which-key
     :config
     (which-key-mode))
 #+end_src
 ** Deadgrep
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package deadgrep
     :config
     (global-set-key (kbd "<f5>") #'deadgrep))
 #+end_src
 ** Org-helm-rifle
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package helm-org-rifle)
   (defun hai/helm-org-rifle-archives ()
     "Rifle through Archives folder"
@@ -260,7 +260,7 @@ Tangle
     (helm-org-rifle-directories "~/Dropbox/orggtd/"))
 #+end_src
 ** Elfeed
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle yes
     (use-package elfeed
       :config
       (global-set-key (kbd "C-x w") 'elfeed)
@@ -275,9 +275,9 @@ Tangle
                   ("https://pbpython.com/feeds/all.atom.xml" python)
                   )))
   #+end_src
-
+  
 ** Deft and zettledeft
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle yes
     (use-package deft
       :defer t
       :commands (deft)
@@ -309,21 +309,21 @@ Tangle
             (case-fn . downcase)))
     (setq deft-org-mode-title-prefix t)
   #+end_src
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package zetteldeft
     :straight (zetteldeft :type git :host github :repo "EFLS/zetteldeft"))
 #+end_src
 *** org-web-tools
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package org-web-tools)
 #+end_src
 ** graphviz mode
 Of course to use this. you have to install graphviz program on you pc. Add it to path if you still cannot run it
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package graphviz-dot-mode)
 #+end_src
 ** Smartparens
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package smartparens
     :config
     (smartparens-global-mode)
@@ -347,7 +347,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
            :post-handlers '(my-add-space-after-sexp-insertion))
 #+end_src
 ** hydra
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package hydra)
 #+end_src
 *** Some useful hydra
@@ -428,7 +428,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
     ("g" nil)))
 #+end_src
 **** Lsp mode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-c l")
   (defhydra hydra-lsp (:exit t :hint nil)
     "
@@ -455,7 +455,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
     ("S" lsp-shutdown-workspace)))
 #+end_src
 **** Apropos commands
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-c a")
   (defhydra hydra-apropos (:color blue)
     "Apropos"
@@ -472,7 +472,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
     ("z" hydra-customize-apropos/body "customize")))
 #+end_src
 **** Transposing
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-c m")
   (defhydra hydra-transpose (:color red)
   "Transpose"
@@ -487,7 +487,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
    ("q" nil "cancel" :blue color)))
 #+end_src
 **** Rectangle operation
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (global-set-key (kbd "C-c r")
   (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
                                        :color pink
@@ -520,7 +520,7 @@ Of course to use this. you have to install graphviz program on you pc. Add it to
 #+end_src
 * Org-mode config
 ** Org-mode helper function
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defun bh/is-project-p ()
   "Any task with a todo keyword subtask"
   (save-restriction
@@ -627,7 +627,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 ** Default config for org-mode
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-refile-use-outline-path 'file)
   (setq org-use-fast-todo-selection t)
@@ -643,7 +643,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 #+END_SRC
 *** Agenda setup
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (require 'org-habit)
 (setq spacemacs-theme-org-agenda-height nil
       org-agenda-start-day "-1d"
@@ -656,7 +656,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       org-agenda-start-with-log-mode t)
 #+END_SRC
 *** Habit and clocking
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (setq  org-habit-following-days 7
        org-habit-preceding-days 10
        org-habit-show-habits-only-for-today t)
@@ -667,7 +667,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (setq org-clock-persist t)
 #+END_SRC
 ** Org-todo-keywords
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (custom-declare-face '+org-todo-active '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
   (custom-declare-face '+org-todo-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
   (custom-declare-face '+org-todo-onhold '((t (:inherit (bold warning org-todo)))) "")
@@ -687,7 +687,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+END_SRC
 *** Org-agenda config
 ** Org-super-agenda setting
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-agenda-files (list "~/Dropbox/orggtd/todo.org"))
   (use-package org-super-agenda
     :config
@@ -769,7 +769,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+END_SRC
 ** Org-capture
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-capture-templates
         (quote (("t" "todo" entry (file+headline "~/Dropbox/orggtd/todo.org" "Inbox")
                  "* [ ] %?\n%U\n%a\n" :clock-in t :clock-resume t)
@@ -789,7 +789,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+END_SRC
 
 ** Org-babel setting
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle yes
           (org-babel-do-load-languages
            'org-babel-load-languages
            '((ruby . t)
@@ -822,7 +822,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
    #+RESULTS:
 
 *** Org babel header
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle yes
       ;;* Python
       (setq org-babel-default-header-args:python
 	    '((:results . "output")))
@@ -839,7 +839,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	      (:exports . "both")))
     #+end_src
 ** Navigation in org-mode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (general-define-key
    :keymaps 'org-mode-map
    "H-n" 'org-next-visible-heading
@@ -849,7 +849,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
    )
 #+end_src
 ** launch agenda
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (defun pop-to-org-agenda (&optional split)
     (interactive "P")
     (org-agenda nil "z")
@@ -858,7 +858,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+end_src
 * Programming setup
 ** Magit - the king of git
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
  (use-package magit)
 #+END_SRC
 ** Python with elpy
@@ -868,11 +868,11 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
     (elpy-enable)
 #+END_SRC
 ** Python debugging with realgud
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (use-package realgud)
 #+END_SRC
 ** Python with lsp mode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package lsp-mode
     :commands lsp
     :hook (prog-mode . lsp))
@@ -880,11 +880,11 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 #+end_src
 ** pyvenv
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package pyvenv)
 #+end_src
 ** C programming setup
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle yes
      (use-package company-irony
        :config
        (add-to-list 'company-backends 'company-irony))
@@ -895,21 +895,22 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	      (irony-mode-hook . irony-cdb-autosetup-compile-options)))
    #+end_src
 ** vterm
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
+
   (use-package vterm)
 
 #+end_src
 ** rustic - rust mode for emacs
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package rustic)
 #+end_src
 ** yaml-mode
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package yaml-mode)
 #+end_src
 * Keybindings for specific modes
 ** For windows movement
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (general-define-key
    :keymaps 'global
    "C-x [" 'previous-buffer
@@ -938,7 +939,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 #+END_SRC
 ** For orgmode navigation
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (general-define-key
    :keymap 'org-mode-map
    "H-n" 'org-next-visible-heading
@@ -955,7 +956,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
    )
 #+end_src
 ** Editting
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (general-define-key
    :keymaps 'global
    "M-p" 'move-line-up
@@ -965,7 +966,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 #+END_SRC
 
 * Helper function for editting
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro save-column (&rest body)
     `(let ((column (current-column)))
        (unwind-protect
@@ -987,7 +988,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (forward-line -1)))
 #+END_SRC
 ** Copy whole line 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
    (defun copy-line (arg)
       "Copy lines (as many as prefix argument) in the kill ring.
 	Ease of use features:
@@ -1009,6 +1010,6 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
       (beginning-of-line (or (and arg (1+ arg)) 2))
       (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 #+END_SRC
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (use-package better-defaults)
 #+end_src
