@@ -157,7 +157,7 @@ Tangle
       (global-company-mode))
 #+END_SRC
 
-** Initialize general keybindings
+** Initialize general keybndings
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package general
@@ -206,16 +206,24 @@ Tangle
   (use-package doom-themes
     :config
     (setq doom-themes-enable-bold t
-	  doom-themes-enable-italic t))
-    (load-theme 'doom-one t)
+          doom-themes-enable-italic t))
+    (load-theme 'leuven t)
 #+END_SRC
 *** Modeline spaceline
-    #+begin_src emacs-lisp  :tangle yes
+    #+begin_src emacs-lisp  :tangle no
       (use-package spaceline
 	:config
 	(require 'spaceline-config)
 	(spaceline-emacs-theme))
     #+end_src
+*** smart-modeline
+#+begin_src emacs-lisp :tangle yes
+  (use-package smart-mode-line)
+  (use-package smart-mode-line-atom-one-dark-theme)
+  (setq sml/theme 'respectful)
+  (sml/setup)
+  (add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DBox:"))
+#+end_src
 *** All the icon
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package all-the-icons)
@@ -862,17 +870,17 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
  (use-package magit)
 #+END_SRC
 ** Python with elpy
-#+BEGIN_SRC emacs-lisp :tangle no
-  use-package elpy
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package elpy
     :config
-    (elpy-enable)
+    (elpy-enable))
 #+END_SRC
 ** Python debugging with realgud
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package realgud)
 #+END_SRC
 ** Python with lsp mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   (use-package lsp-mode
     :commands lsp
     :hook (prog-mode . lsp))
